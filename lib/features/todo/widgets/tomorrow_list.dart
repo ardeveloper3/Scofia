@@ -8,12 +8,17 @@ import 'package:scofia/features/todo/controllers/todo/todo_provider.dart';
 import 'package:scofia/features/todo/controllers/xpansion_provider.dart';
 import 'package:scofia/features/todo/pages/UpdateTask.dart';
 import 'package:scofia/features/todo/widgets/todo_tile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TomorrowList extends ConsumerWidget {
   const TomorrowList({
     super.key,
 
   });
+  Future<void> saveCompletedListLength(int length) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('TomorrowTask', length);
+  }
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
@@ -22,6 +27,8 @@ class TomorrowList extends ConsumerWidget {
 
     String tomorrow = ref.read(todoStateProvider.notifier).getTomorrow();
     var tomorrowsTasks = todos.where((element) => element.date!.contains(tomorrow));
+    saveCompletedListLength(tomorrowsTasks.length);
+
     return XpansionTile(
       text: "Tomorrow's Task",
       text2: "Tomorrow's tasks are show here",

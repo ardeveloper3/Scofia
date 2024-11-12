@@ -5,11 +5,18 @@ import 'package:scofia/common/models/task_model.dart';
 import 'package:scofia/common/utils/constants.dart';
 import 'package:scofia/features/todo/controllers/todo/todo_provider.dart';
 import 'package:scofia/features/todo/widgets/todo_tile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 
 class CompletedTask extends ConsumerWidget {
   const CompletedTask({
     super.key,
   });
+
+  Future<void> saveCompletedListLength(int length) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('CompletedList', length);
+  }
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
@@ -18,6 +25,28 @@ class CompletedTask extends ConsumerWidget {
     List lastMounth = ref.read(todoStateProvider.notifier).last30days();
     var completedList = listData.where((element)
     => element.isCompleted == 1 || lastMounth.contains(element.date!.substring(0,10)) ).toList();
+    saveCompletedListLength(completedList.length);
+
+  if(completedList.isEmpty){
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/taskfile.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Text("No completed task yet!",style: TextStyle(fontSize: 30,color: AppConst.kBkDark),)
+        ],
+      ),
+    );
+  }
     return ListView.builder(
       itemCount:completedList.length ,
       itemBuilder: (context , index){
@@ -27,7 +56,59 @@ class CompletedTask extends ConsumerWidget {
 
         return  TodoTile(
           delete: (){
-            ref.read(todoStateProvider.notifier).deleteTodo(data.id??0);
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: Colors.white,
+                  content: SizedBox(
+                    height: 200,
+                    width: 300,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Centered image
+                        Image.asset(
+                          'assets/images/deletetask.png',
+                          width: 280,
+                          height: 130,
+                        ),
+                        SizedBox(height: 16),
+                        // Title text
+                        Text(
+                          'Do you want to delete this task ?',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        // Close the dialog without making any changes
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('No'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+
+                        ref.read(todoStateProvider.notifier).deleteTodo(data.id??0);
+                        Workmanager().cancelByUniqueName(data.id.toString());
+                        print("${data.id } this id wise task hase been deleted");
+
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('yes'),
+                    ),
+                  ],
+                );
+              },
+            );
           },
           editWidget: SizedBox.shrink(),
           title: data.title,

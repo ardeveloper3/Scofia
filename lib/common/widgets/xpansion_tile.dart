@@ -12,8 +12,15 @@ class XpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(left: 10,right: 10),
       decoration: BoxDecoration(
-        color: AppConst.kBkLight,
+      gradient: LinearGradient(
+          colors: [
+            Colors.pinkAccent,
+            Colors.blue,
+          ],
+        begin: Alignment.centerLeft,
+      ),
         borderRadius: BorderRadius.all(Radius.circular(AppConst.kRadius)),
 
       ),

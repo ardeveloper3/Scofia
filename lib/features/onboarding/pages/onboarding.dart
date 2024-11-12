@@ -29,15 +29,22 @@ class _OnboardingState extends State<Onboarding> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: AppConst.kBkDark,
+      backgroundColor: Colors.white,
       body: Center(
         child: Container(
-            height: 270,
-            width: 290,
+            height: 275,
+            width: 250,
             decoration: BoxDecoration(
+
               borderRadius: BorderRadius.circular(70)
             ),
-            child: Image.asset("assets/images/scofia_icon.png",fit: BoxFit.cover,)),
+            child:Column(
+              children: [
+                Image.asset("assets/images/provoice.png",fit: BoxFit.cover,),
+              ],
+            ),
+
+        ),
       )
     );
   }

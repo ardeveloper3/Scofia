@@ -16,20 +16,25 @@ class _FutureTaskState extends ConsumerState<FutureTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          HeightSpacer(height:100),
-          //TODO this tomorrows hole section
-          TomorrowList(),
-
-          HeightSpacer(height: 20),
-
-          DayAfta(),
-
-          HeightSpacer(height: 20),
-
-          Alltask(),
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/taskappfile.png"),fit: BoxFit.cover)
+        ),
+        child: ListView(
+          children: [
+            HeightSpacer(height:20),
+            //TODO this tomorrows hole section
+            TomorrowList(),
+        
+            HeightSpacer(height: 20),
+        
+            DayAfta(),
+        
+            HeightSpacer(height: 20),
+        
+            Alltask(),
+          ],
+        ),
       ),
     );
   }

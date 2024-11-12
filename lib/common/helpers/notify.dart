@@ -1,88 +1,42 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
-class NotificationService {
-  //flutter localNoticationPlagins
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+class TextToSpeech extends StatelessWidget {
+  TextToSpeech({super.key});
+  final FlutterTts flutterTts = FlutterTts();
+  final TextEditingController textEditingController = TextEditingController();
 
-  static Future<void> onDidReceiveNotification(
-      NotificationResponse notificationResponse) async {}
-
-  //initialize the notificatio plugin
-  static Future<void> init() async {
-
-
-    //define the android initialize
-    const AndroidInitializationSettings androidInitializationSettings =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    // define ios Initialize settings
-    const DarwinInitializationSettings iOSInitializationSettings =
-    DarwinInitializationSettings();
-
-    //combine Android and Ios initilizationSettings
-    const InitializationSettings initializationSettings =
-    InitializationSettings(
-      android: androidInitializationSettings,
-      iOS: iOSInitializationSettings,
-    );
-
-    //initialize the plugin with the specified settings
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: onDidReceiveNotification,
-      onDidReceiveBackgroundNotificationResponse: onDidReceiveNotification,
-    );
-    // request Notification permission for android
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
+  Future<void> speak(String text) async {
+    await flutterTts.awaitSpeakCompletion(true); // Ensure it waits until speech is completed
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setPitch(1.0);
+    await flutterTts.setVolume(1.0);
+    await flutterTts.setSpeechRate(0.7);
+    await flutterTts.speak(text);
   }
 
-  //show an instant notification
-
-  static Future<void> showInstantNotification(String title, String body) async {
-    // define Notification details
-
-    const NotificationDetails platformChannelSpcifics = NotificationDetails(
-        android: AndroidNotificationDetails(
-          "channel_Id",
-          "channel_Name",
-          importance: Importance.high,
-          priority: Priority.high,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: textEditingController,
+            ),
+            ElevatedButton(
+              onPressed: (){
+                speak(textEditingController.text);
+              },
+              child: Text('start text to speech'),
+      
+            )
+          ],
         ),
-        iOS: DarwinNotificationDetails());
-    await flutterLocalNotificationsPlugin.show(
-        0, title, body, platformChannelSpcifics);
-  }
-
-  //show Scedule Notification
-  static Future<void> scheduleNotification(
-      String title, String body, DateTime scheduledTimeDate) async {
-    // define Notification details
-
-    const NotificationDetails platformChannelSpcifics = NotificationDetails(
-        android: AndroidNotificationDetails(
-          "channel_Id",
-          "channel_Name",
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-        iOS: DarwinNotificationDetails());
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        title,
-        body,
-        tz.TZDateTime.from(scheduledTimeDate, tz.local),
-        platformChannelSpcifics,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dateAndTime
-
-
+      ),
     );
   }
-
 }

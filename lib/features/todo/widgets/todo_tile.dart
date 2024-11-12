@@ -27,7 +27,7 @@ final void Function()? delete;
           padding: EdgeInsets.all(8.h),
           width: AppConst.kWidth,
           decoration: BoxDecoration(
-            color: AppConst.kGreyLight,
+            color: Colors.greenAccent.withOpacity(0.7),
             borderRadius: BorderRadius.all(Radius.circular(AppConst.kRadius))
           ),
           child: Row(
@@ -54,11 +54,11 @@ final void Function()? delete;
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ReusableText(text: title??"Title of Todo",
-                            style:appstyle(18, AppConst.kLight, FontWeight.bold)),
+                            style:appstyle(18, AppConst.kBkDark, FontWeight.bold)),
 
                         HeightSpacer(height: 3),
                         ReusableText(text: description ?? "Description of todo",
-                            style:appstyle(12, AppConst.kLight, FontWeight.bold)),
+                            style:appstyle(12, AppConst.kGreyLight, FontWeight.bold)),
                         HeightSpacer(height: 10),
 
                         Row(

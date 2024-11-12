@@ -8,7 +8,6 @@ showAlertDialog({
   required BuildContext context,
   required String message,
   String? btnText,
-
 }){
   return showDialog(context: context, builder: (context){
     return AlertDialog(
